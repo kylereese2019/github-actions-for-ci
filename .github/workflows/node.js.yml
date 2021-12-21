@@ -14,15 +14,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: pwd
+      run: pwd
+    - name: ls -l 1
+      run: ls -l
     - name: npm install and build webpack
       run: |
         npm install
         npm run build
+    - name: ls -l 2
+      run: ls -l
     - uses: actions/upload-artifact@main
       with:
         name: webpack artifacts
         path: public/  
   test:
+    needs: build
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -31,6 +38,10 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/download-artifact@main
+      with: 
+        name: webpack artifacts
+        path: public
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
